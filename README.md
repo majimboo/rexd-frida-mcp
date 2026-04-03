@@ -1,6 +1,8 @@
-# REXD
+# ReverseEngineerXD
 
 `rexd` is a local Frida-based MCP server for agent-driven reverse engineering.
+
+It is built for practical reverse engineering MCP workflows, including reverse engineer with AI setups and LLM-assisted reverse engineering where an agent needs a small, typed runtime instrumentation surface.
 
 It is designed for workflows like:
 
