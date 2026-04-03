@@ -1,0 +1,1 @@
+codex mcp add rexd --env NODE_NO_WARNINGS=1 -- node D:\projects\REXD\src\mcp-server.mjs

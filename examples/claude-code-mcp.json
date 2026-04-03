@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "rexd": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "D:\\projects\\REXD\\src\\mcp-server.mjs"
+      ],
+      "env": {}
+    }
+  }
+}

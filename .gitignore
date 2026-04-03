@@ -1,0 +1,13 @@
+node_modules/
+npm-debug.log*
+
+# Local debug and runtime logs
+*.log
+
+# Rust target artifacts
+targets/*/target/
+targets/*/*.out
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
