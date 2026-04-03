@@ -76,7 +76,8 @@ registerActionTool(server, 'attach', 'Attach to a running process by PID or proc
 });
 registerActionTool(server, 'spawn', 'Spawn a program in suspended state and attach to it.', {
   program: z.string().describe('Absolute path or executable name'),
-  args: z.array(z.string()).default([]).describe('Command-line arguments')
+  args: z.array(z.string()).default([]).describe('Command-line arguments'),
+  cwd: z.string().optional().describe('Optional working directory; defaults to the executable folder when program includes a path')
 });
 registerActionTool(server, 'resume', 'Resume a process previously spawned in suspended state.', {
   sessionId: z.union([z.string(), z.number()]).describe('Bridge session ID')

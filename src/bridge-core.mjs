@@ -1,4 +1,5 @@
 import frida from 'frida';
+import path from 'node:path';
 import { agentSource } from './agent-source.mjs';
 
 function normalizeAttachTarget(target) {
@@ -95,15 +96,30 @@ export class SessionRegistry {
     };
   }
 
-  async spawn(program, args = []) {
+  async spawn(program, args = [], cwd) {
     if (typeof program !== 'string' || program.length === 0) {
       throw new Error('program is required');
     }
     if (!Array.isArray(args)) {
       throw new Error('args must be an array');
     }
+    if (cwd !== undefined && (typeof cwd !== 'string' || cwd.length === 0)) {
+      throw new Error('cwd must be a non-empty string when provided');
+    }
 
-    const pid = await frida.spawn([program, ...args]);
+    let resolvedCwd = cwd;
+    if (resolvedCwd === undefined) {
+      const hasPathSeparator = /[\\/]/.test(program);
+      if (hasPathSeparator) {
+        const programDir = path.dirname(program);
+        if (programDir !== '.' && programDir !== '') {
+          resolvedCwd = programDir;
+        }
+      }
+    }
+
+    const spawnOptions = resolvedCwd !== undefined ? { cwd: resolvedCwd } : undefined;
+    const pid = await frida.spawn([program, ...args], spawnOptions);
     const result = await this.attach(pid);
     const entry = this.get(result.sessionId);
     entry.mode = 'spawn';
@@ -153,7 +169,7 @@ export function createDispatcher(registry) {
         return registry.attach(params.target);
 
       case 'spawn':
-        return registry.spawn(params.program, params.args);
+        return registry.spawn(params.program, params.args, params.cwd);
 
       case 'resume':
         return registry.resume(String(params.sessionId));
