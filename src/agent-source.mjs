@@ -338,9 +338,9 @@ rpc.exports = {
     const resolved = resolveTarget(spec);
     const hookId = String(nextHookId++);
     const config = options || {};
-    const maxEvents = Number.isInteger(config.maxEvents) && config.maxEvents > 0 ? config.maxEvents : 200;
-    const captureArgs = Number.isInteger(config.captureArgs) && config.captureArgs >= 0 ? config.captureArgs : 6;
-    const captureBacktrace = config.captureBacktrace !== false;
+    const maxEvents = Number.isInteger(config.maxEvents) && config.maxEvents > 0 ? config.maxEvents : 50;
+    const captureArgs = Number.isInteger(config.captureArgs) && config.captureArgs >= 0 ? config.captureArgs : 4;
+    const captureBacktrace = config.captureBacktrace === true;
     const hook = {
       hookId,
       address: resolved.address,
@@ -430,14 +430,28 @@ rpc.exports = {
     };
   },
 
-  drainhookevents(hookid, limit) {
+  drainhookevents(hookid, limit, summary) {
     const hook = hooks.get(String(hookid));
     if (hook == null) {
       throw new Error('unknown hook: ' + hookid);
     }
 
-    const count = Number.isInteger(limit) && limit > 0 ? limit : hook.events.length;
+    const count = Number.isInteger(limit) && limit > 0 ? limit : Math.min(hook.events.length, 25);
     const events = hook.events.splice(0, count);
+
+    if (summary === true) {
+      const calls = {};
+      for (let i = 0; i < events.length; i += 1) {
+        const key = events[i].target || 'unknown';
+        calls[key] = (calls[key] || 0) + 1;
+      }
+      return {
+        hookId: String(hookid),
+        drained: events.length,
+        remaining: hook.events.length,
+        summary: calls
+      };
+    }
 
     return {
       hookId: String(hookid),

@@ -257,7 +257,7 @@ export function createDispatcher(registry) {
 
       case 'drainHookEvents': {
         const entry = registry.get(String(params.sessionId));
-        return entry.script.exports.drainhookevents(params.hookId, params.limit);
+        return entry.script.exports.drainhookevents(params.hookId, params.limit, params.summary);
       }
 
       default:

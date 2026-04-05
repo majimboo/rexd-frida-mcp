@@ -15,7 +15,7 @@ function formatResult(result) {
     content: [
       {
         type: 'text',
-        text: JSON.stringify(result, null, 2)
+        text: JSON.stringify(result)
       }
     ]
   };
@@ -150,7 +150,7 @@ registerActionTool(server, 'getBacktrace', 'Capture a backtrace for the current 
   sessionId: z.union([z.string(), z.number()]).describe('Bridge session ID'),
   accuracy: z.enum(['accurate', 'fuzzy']).default('accurate').optional().describe('Backtrace mode')
 });
-registerActionTool(server, 'startHook', 'Install a function hook and buffer call events.', {
+registerActionTool(server, 'startHook', 'Install a function hook and buffer call events. Defaults: maxEvents=50, captureArgs=4, captureBacktrace=false.', {
   sessionId: z.union([z.string(), z.number()]).describe('Bridge session ID'),
   target: z.object({
     address: z.union([z.string(), z.number()]).optional(),
@@ -160,9 +160,9 @@ registerActionTool(server, 'startHook', 'Install a function hook and buffer call
     functionName: z.string().optional()
   }).describe('Hook target specification'),
   options: z.object({
-    maxEvents: z.number().int().positive().optional(),
-    captureArgs: z.number().int().min(0).max(16).optional(),
-    captureBacktrace: z.boolean().optional()
+    maxEvents: z.number().int().positive().optional().describe('Max buffered events (default 50)'),
+    captureArgs: z.number().int().min(0).max(16).optional().describe('Number of args to capture (default 4)'),
+    captureBacktrace: z.boolean().optional().describe('Capture backtrace per call (default false, expensive)')
   }).optional()
 });
 registerActionTool(server, 'listHooks', 'List installed hooks for a session.', {
@@ -172,10 +172,11 @@ registerActionTool(server, 'removeHook', 'Remove a previously installed hook.', 
   sessionId: z.union([z.string(), z.number()]).describe('Bridge session ID'),
   hookId: z.union([z.string(), z.number()]).describe('Hook ID')
 });
-registerActionTool(server, 'drainHookEvents', 'Drain buffered hook events from a hook.', {
+registerActionTool(server, 'drainHookEvents', 'Drain buffered hook events from a hook. Defaults to 25 events max. Use summary=true for compact call counts instead of full event objects.', {
   sessionId: z.union([z.string(), z.number()]).describe('Bridge session ID'),
   hookId: z.union([z.string(), z.number()]).describe('Hook ID'),
-  limit: z.number().int().positive().optional().describe('Maximum number of events to drain')
+  limit: z.number().int().positive().optional().describe('Maximum events to drain (default 25)'),
+  summary: z.boolean().optional().describe('Return call counts instead of full events')
 });
 
 const transport = new StdioServerTransport();
