@@ -31,6 +31,7 @@ The project exposes a small, typed tool surface for attaching to processes, read
 - `enumerateSymbols`
 - `readMemory`
 - `writeMemory`
+- `protectMemory`
 - `readUtf8`
 - `scanMemory`
 - `getSymbolDetails`

@@ -1,6 +1,6 @@
 {
   "name": "rexd",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "description": "Minimal Frida bridge for agent-driven reverse engineering",
   "license": "MIT",

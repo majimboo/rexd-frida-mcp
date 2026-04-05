@@ -66,7 +66,7 @@ function registerActionTool(server, name, description, inputSchema) {
 
 const server = new McpServer({
   name: 'rexd',
-  version: '0.1.0'
+  version: '0.1.1'
 });
 
 registerActionTool(server, 'ping', 'Return bridge version and active sessions.', {});
